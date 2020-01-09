@@ -5,6 +5,16 @@ import java.util.Arrays;
 import java.util.List;
 
 public class Args {
+
+    private Args() {
+    }
+
+    public Args(List<ParameterDefinition> list) {
+        this.parameterDefinitions = list;
+    }
+
+    public List<ParameterDefinition> parameterDefinitions = new ArrayList<>();
+
     public List<Parameter> parse(String inputString) {
         List<Parameter> list = new ArrayList<>();
         String argPairs[] = inputString.split("-");
@@ -12,6 +22,12 @@ public class Args {
             Parameter parameter = parseSingleArgPairToParameter(argPair);
             list.add(parameter);
         });
+        list.stream().forEach((parameter -> {
+            if (!parameterDefinitions.stream().anyMatch(parameterDefinition -> parameterDefinition.getOption().equals(parameter.getOption()))) {
+                throw new RuntimeException("Illegal option");
+            }
+
+        }));
         return list;
     }
 
