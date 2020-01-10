@@ -14,9 +14,9 @@ public class ArgsTest {
 
     @BeforeEach
     public void initial() {
-        List<ParameterDefinition> list = new ArrayList<>();
-        list.add(new ParameterDefinition("P", "0", "String"));
-        list.add(new ParameterDefinition("d", "/", "String"));
+        List<Parameter> list = new ArrayList<>();
+        list.add(new Parameter("P", "0"));
+        list.add(new Parameter("d", "/"));
         args = new Args(list);
     }
 
@@ -43,12 +43,19 @@ public class ArgsTest {
     }
 
     @Test
-    public void given_only_option_should_Default_0() {
-        List<Parameter> parameterList = args.parse("-P");
-        Assertions.assertEquals(1, parameterList.size());
-        Optional<Parameter> firstParam = parameterList.stream().findFirst();
-        Assertions.assertEquals("P", firstParam.get().getOption());
-        Assertions.assertEquals("0", firstParam.get().getValue());
+    public void given_only_option_should_Default_Value() {
+
+        List<Parameter> list = new ArrayList<>();
+        list.add(new Parameter("P", "0"));
+        list.add(new Parameter("d", "/"));
+        list.add(new Parameter("B", "false"));
+        args = new Args(list);
+        List<Parameter> parameterList = args.parse("-P -d -B");
+        Assertions.assertEquals(3, parameterList.size());
+
+        Assertions.assertEquals("false", parameterList.stream().filter(parameter -> parameter.getOption().equals("B")).findFirst().get().getValue());
+        Assertions.assertEquals("/", parameterList.stream().filter(parameter -> parameter.getOption().equals("d")).findFirst().get().getValue());
+        Assertions.assertEquals("0", parameterList.stream().filter(parameter -> parameter.getOption().equals("P")).findFirst().get().getValue());
     }
 
     @Test
