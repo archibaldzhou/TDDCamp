@@ -19,4 +19,8 @@ public class Schemas {
     public String getDefaultValue(String key) {
         return map.get(key);
     }
+
+    public boolean contains(String name) {
+        return map.keySet().contains(name);
+    }
 }
